@@ -1,11 +1,17 @@
-import React from 'react';
+import React from "react"
 
-import Recorder from '../Recoder/Recorder';
+import Recorder from "../Recoder/Recorder"
+import Calendar from "../Calendar/Calendar"
 
-import './App.css';
+import "./App.css"
 
 const App: React.FC = () => {
-  return <div className="App"><Recorder/></div>;
-};
+  return (
+    <div className="App">
+      <Recorder />
+      <Calendar />
+    </div>
+  )
+}
 
-export default App;
+export default App
