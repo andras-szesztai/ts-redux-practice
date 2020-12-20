@@ -1,6 +1,8 @@
 import React, { useEffect } from "react"
 import { connect, ConnectedProps } from "react-redux"
 
+import EventItem from "../EventItem/EventItem"
+
 import { RootState } from "../../redux/store"
 import {
   selectUserEventsArray,
@@ -80,22 +82,9 @@ const Calendar: React.FC<Props> = ({ events, loadUserEvents }) => {
               </span>
             </div>
             <div className="calendar-events">
-              {dayEvents.map((event, i) => {
-                return (
-                  <div
-                    key={`${event.id}-${i}-event`}
-                    className="calendar-event"
-                  >
-                    <div className="calendar-event-info">
-                      <div className="calendar-event-time">10:00 - 12:00</div>
-                      <div className="calendar-event-title">{event.title}</div>
-                    </div>
-                    <button className="calendar-event-delete-button">
-                      &times;
-                    </button>
-                  </div>
-                )
-              })}
+              {dayEvents.map((event) => (
+                <EventItem key={`${event.id}-event`} event={event} />
+              ))}
             </div>
           </div>
         )

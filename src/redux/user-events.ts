@@ -102,6 +102,52 @@ export const createUserEvent = (): ThunkAction<
   }
 }
 
+const DELETE_REQUEST = "userEvents/delete_request"
+const DELETE_SUCCESS = "userEvents/delete_success"
+const DELETE_FAIL = "userEvents/delete_fail"
+
+interface DeleteRequestAction extends Action<typeof DELETE_REQUEST> {}
+interface DeleteSuccessAction extends Action<typeof DELETE_SUCCESS> {
+  payload: {
+    id: UserEvent["id"]
+  }
+}
+
+interface DeleteFailAction extends Action<typeof DELETE_FAIL> {
+  error: string
+}
+
+export const deleteUserEvent = (
+  id: UserEvent["id"]
+): ThunkAction<
+  Promise<void>,
+  RootState,
+  undefined,
+  DeleteRequestAction | DeleteSuccessAction | DeleteFailAction
+> => async (dispatch) => {
+  dispatch({
+    type: DELETE_REQUEST,
+  })
+  try {
+    const response = await fetch(`http://localhost:3001/events/${id}`, {
+      method: "DELETE",
+    })
+    if (response.ok) {
+      dispatch({
+        type: DELETE_SUCCESS,
+        payload: {
+          id,
+        },
+      })
+    }
+  } catch (e) {
+    dispatch({
+      type: DELETE_FAIL,
+      error: "Could not delete event",
+    })
+  }
+}
+
 export const selectUserEventsArray = (rootState: RootState) =>
   rootState.userEvents.allIds.map((id) => rootState.userEvents.byIds[id])
 
@@ -112,7 +158,7 @@ const initialState: UserEventsState = {
 
 const userEventsReducer = (
   state: UserEventsState = initialState,
-  action: LoadSuccessAction | CreateSuccessAction
+  action: LoadSuccessAction | CreateSuccessAction | DeleteSuccessAction
 ) => {
   switch (action.type) {
     case LOAD_SUCCESS:
@@ -132,6 +178,15 @@ const userEventsReducer = (
         allIds: [...state.allIds, event.id],
         byIds: { ...state.byIds, [event.id]: event },
       }
+    case DELETE_SUCCESS:
+      const { id } = action.payload
+      const newState = {
+        ...state,
+        byIds: { ...state.byIds },
+        allIds: state.allIds.filter((sId) => sId !== id),
+      }
+      delete newState.byIds[id]
+      return newState
     default:
       return state
   }
