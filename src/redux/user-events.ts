@@ -1,9 +1,9 @@
-import { Action, AnyAction } from "redux"
+import { Action } from "redux"
 import { ThunkAction } from "redux-thunk"
 
 import { RootState } from "./store"
 
-interface UserEvent {
+export interface UserEvent {
   id: number
   title: string
   dateStart: string
@@ -51,6 +51,9 @@ export const loadUserEvents = (): ThunkAction<
     })
   }
 }
+
+export const selectUserEventsArray = (rootState: RootState) =>
+  rootState.userEvents.allIds.map((id) => rootState.userEvents.byIds[id])
 
 const initialState: UserEventsState = {
   byIds: {},
