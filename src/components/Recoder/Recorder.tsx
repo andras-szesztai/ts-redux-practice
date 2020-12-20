@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import cx from "classnames"
 
 import { selectDateStart, start, stop } from "../../redux/recorder"
+import { createUserEvent } from "../../redux/user-events"
 import { addZero } from "../../lib/utils"
 
 import "./Recorder.css"
@@ -17,6 +18,7 @@ const Recorder: React.FC  = () => {
   const handleClick = () => {
     if (started) {
       window.clearInterval(interval.current)
+      dispatch(createUserEvent())
       dispatch(stop())
     } else {
       dispatch(start())

@@ -45,7 +45,6 @@ const groupEventsByDay = (events: UserEvent[]) => {
     const dateStartKey = createDateKey(new Date(event.dateStart))
     const dateEndKey = createDateKey(new Date(event.dateEnd))
     addToGroup(dateStartKey, event)
-    groups[dateStartKey].push(event)
     if (dateEndKey !== dateStartKey) {
       addToGroup(dateEndKey, event)
     }
@@ -63,13 +62,13 @@ const Calendar: React.FC<Props> = ({ events, loadUserEvents }) => {
   if (events.length) {
     groupedEvents = groupEventsByDay(events)
     sortedGroupKeys = Object.keys(groupedEvents).sort(
-      (date1, date2) => +new Date(date1) - +new Date(date2)
+      (date1, date2) => +new Date(date2) - +new Date(date1)
     )
   }
   return groupedEvents && sortedGroupKeys ? (
     <div className="calendar">
       {sortedGroupKeys.map((dayKey) => {
-        const events = groupedEvents ? groupedEvents[dayKey] : []
+        const dayEvents = groupedEvents ? groupedEvents[dayKey] : []
         const groupDate = new Date(dayKey)
         const day = groupDate.getDate()
         const month = groupDate.toLocaleString(undefined, { month: "long" })
@@ -81,7 +80,7 @@ const Calendar: React.FC<Props> = ({ events, loadUserEvents }) => {
               </span>
             </div>
             <div className="calendar-events">
-              {events.map((event, i) => {
+              {dayEvents.map((event, i) => {
                 return (
                   <div
                     key={`${event.id}-${i}-event`}
